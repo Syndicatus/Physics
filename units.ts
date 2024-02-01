@@ -62,12 +62,13 @@ const sameUnits = (a: Array<unit>, b: Array<unit>): boolean => {
 };
 
 const combineUnits = (arr: Array<unit>): Array<unit> => {
-    type UnitObject = {[key: BaseUnit]: number};
-    const unitObj: UnitObject = arr.reduce((acc: UnitObject, unit) => {
+    type UnitObject = Record<BaseUnit, unit | undefined>;
+    const unitObj: UnitObject = arr.reduce((acc, unit) => {
         const {name, power} = unit;
-        if (!(name in acc)) return {...acc, [name]: unit};
-        return {...acc, [name]: {name, power: power+acc[name]}} 
-    }, {});
+        if (acc[name] === undefined) return {...acc, [name]: unit};
+        const newPower = power + (acc[name] ?? {power: 0}).power;
+        return {...acc, [name]: {name, power: newPower}}; 
+    }, {m: undefined, s: undefined, kg: undefined, A: undefined, K: undefined, mol: undefined, cd: undefined});
 
     return Object.keys(unitObj).map((key) => unitObj[key]);
 };
