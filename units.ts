@@ -1,4 +1,4 @@
-type BaseUnit = "m" | "s" | "kg" | "A" | "K" | "mol" | "cd";
+type BaseUnit = "m" | "s" | "kg" | "A" | "K" | "cd";
 
 export type unit = {
     name: BaseUnit,
@@ -25,7 +25,21 @@ const kilogram: unit = {name: "kg", power: 1};
 const Ampere: unit = {name: "A", power: 1};
 const Kelvin: unit = {name: "K", power: 1};
 
-export const units: Array<unit> = [meter, second, kilogram, Ampere, Kelvin];
+export const units: {[key: string]: unit} = {
+    m: meter, 
+    s: second, 
+    kg: kilogram, 
+    A: Ampere, 
+    K: Kelvin};
+
+const emptyUnits: {[key: string]: unit} = {
+    m: {name: "m", power: 0},
+    s: {name: "s", power: 0},
+    kg: {name: "kg", power: 0},
+    A: {name: "A", power: 0},
+    K: {name: "K", power: 0},
+    cd: {name: "cd", power: 0},
+};
 //#endregion
 
 const lengthUnits: Array<derivedUnit> = [
@@ -41,7 +55,7 @@ const otherUnits: Array<derivedUnit> = [
 export const allUnits: {[key: string]: derivedUnit} = 
     [...lengthUnits, ...otherUnits].reduce((accumulator, unit) => {return {...accumulator, [unit.name]: unit}},{});
 
-const addUnits = (num: number, units: Array<unit | derivedUnit>): numberWithUnits => {
+export const addUnits = (num: number, units: Array<unit | derivedUnit>): numberWithUnits => {
     let number = num;
     const unitList: Array<unit> = units.flatMap((unit) => {
         if ("power" in unit) return unit;
@@ -62,15 +76,16 @@ const sameUnits = (a: Array<unit>, b: Array<unit>): boolean => {
 };
 
 const combineUnits = (arr: Array<unit>): Array<unit> => {
-    type UnitObject = Record<BaseUnit, unit | undefined>;
+    type UnitObject = {[key: symbol | string]: unit};
     const unitObj: UnitObject = arr.reduce((acc, unit) => {
         const {name, power} = unit;
-        if (acc[name] === undefined) return {...acc, [name]: unit};
-        const newPower = power + (acc[name] ?? {power: 0}).power;
+        const newPower = power + acc[name].power;
         return {...acc, [name]: {name, power: newPower}}; 
-    }, {m: undefined, s: undefined, kg: undefined, A: undefined, K: undefined, mol: undefined, cd: undefined});
+    }, emptyUnits);
 
-    return Object.keys(unitObj).map((key) => unitObj[key]);
+    return Object.keys(unitObj)
+            .map((key) => unitObj[key])
+            .filter((unit) => unit.power !== 0);
 };
 
 const invertUnits = (arr: Array<unit>): Array<unit> => arr.map(({name, power}) => {return {name, power: power*-1}});
