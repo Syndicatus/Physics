@@ -1,12 +1,12 @@
-import {addUnits, units, allUnits, math} from "./units";
+import {addUnits, units, allUnits, math, restateUnits} from "./units";
 
-const {divide} = math;
+const {multiply} = math;
 const {m, kg, s} = units;
-const {N} = allUnits;
+const {N, J} = allUnits;
 
 const v1 = addUnits(20, [N]);
-const v2 = addUnits(1, [kg]);
+const v2 = addUnits(1, [m]);
 
-const v3 = divide(v1, v2);
+const v3 = multiply(v1, v2);
 
-console.log(v3);
+console.log(restateUnits(v3, [J]));

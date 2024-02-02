@@ -18,6 +18,11 @@ export type numberWithUnits = {
     units: Array<unit>
 };
 
+export type numberWithDerivedUnits = {
+    value: number,
+    units: Array<unit | derivedUnit>
+}
+
 //#region Base Units
 const meter: unit = {name: "m", power: 1};
 const second: unit = {name: "s", power: 1};
@@ -49,6 +54,7 @@ const lengthUnits: Array<derivedUnit> = [
 
 const otherUnits: Array<derivedUnit> = [
     {name: "N", components: [meter, kilogram, {name: "s", power: -2}]},
+    {name: "J", components: [{name: "m", power: 2}, kilogram, {name: "s", power: -2}]},
     {name: "C", components: [Ampere, second]}
 ];
 
@@ -66,6 +72,15 @@ export const addUnits = (num: number, units: Array<unit | derivedUnit>): numberW
     const trueUnits = combineUnits(unitList);
 
     return {value: number, units: trueUnits};
+};
+
+export const restateUnits = (number: numberWithUnits, units: Array<unit | derivedUnit>): numberWithDerivedUnits => {
+    const trueUnits: numberWithUnits = addUnits(1, units);
+    const remainingUnits = divide(number, trueUnits);
+
+    const finalUnits = [...units, ...remainingUnits.units];
+
+    return {value: number.value, units: finalUnits}
 };
 
 const sameUnits = (a: Array<unit>, b: Array<unit>): boolean => {
