@@ -60,3 +60,38 @@ export const powerUnit = (unit: unit | derivedUnit, powerMultiplier: number) =>
 export const powerBaseUnit = ({name}: unit, power: number) => {return {name, power}}
  
 export const invertUnits = (arr: Array<unit>): Array<unit> => arr.map(({name, power}) => {return {name, power: power*-1}});
+
+const superText = "⁰¹²³⁴⁵⁶⁷⁸⁹".split("");
+
+const convertToSuperText = (n: number) => {
+    const number = Math.abs(n);
+    const digits = `${number}`.split("").map(Number);
+    return digits.map(v => superText[v]).join("");
+};
+
+const convertUnitName = (unit: unit | derivedUnit): string => {
+    let number: number;
+    if ("power" in unit) number = unit.power;
+    else number = unit.powerMultiplier ?? 1;
+
+    if (number === 1) return `${unit.name}`;
+    return `${unit.name}${convertToSuperText(number)}`;
+}
+
+export const display = ({value, units}: numberWithUnits | numberWithDerivedUnits) => {
+    const positiveExponent = units.filter((unit) => {
+        if ("power" in unit) return unit.power > 0;
+        return (unit.powerMultiplier ?? 1) > 0;
+    });
+    const negativeExponent = units.filter((unit) => {
+        if ("power" in unit) return unit.power <= 0;
+        return (unit.powerMultiplier ?? 1) <= 0;
+    });
+
+    const hasNegative = negativeExponent.length > 0;
+
+    const positiveUnits = positiveExponent.map(convertUnitName).join("");
+    const negativeUnits = negativeExponent.map(convertUnitName).join("");
+
+    return `${value} ${positiveUnits}${hasNegative ? "/":""}${negativeUnits}`;
+}

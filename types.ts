@@ -11,7 +11,7 @@ export type derivedUnit = {
     powerMultiplier?: number,
     multiplier?: number
     offset?: number
-}
+};
 
 export type numberWithUnits = {
     value: number
@@ -21,4 +21,4 @@ export type numberWithUnits = {
 export type numberWithDerivedUnits = {
     value: number,
     units: Array<unit | derivedUnit>
-}
+};
