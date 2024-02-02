@@ -1,5 +1,6 @@
-import { numberWithUnits } from "./types";
+import { numberWithUnits, vectorWithUnits } from "./types";
 import { sameUnits, combineUnits, invertUnits } from "./number";
+import { addVector, subVector } from "./vector";
 
 export const add = (a: numberWithUnits, b: numberWithUnits):numberWithUnits => {
     if (!sameUnits(a.units, b.units)) throw Error("Adding mismatched units");
@@ -7,9 +8,19 @@ export const add = (a: numberWithUnits, b: numberWithUnits):numberWithUnits => {
 };
 
 export const subtract = (a: numberWithUnits, b: numberWithUnits):numberWithUnits => {
-    if (!sameUnits(a.units, b.units)) throw Error("Adding mismatched units");
+    if (!sameUnits(a.units, b.units)) throw Error("Subtracting mismatched units");
     return {value: a.value - b.value, units: a.units};
 };
+
+export const addVectors = (a: vectorWithUnits, b: vectorWithUnits): vectorWithUnits => {
+    if (!sameUnits(a.units, b.units)) throw Error("Adding mismatched units");
+    return {value: addVector(a.value, b.value), units: a.units};
+}
+
+export const subtractVectors = (a: vectorWithUnits, b: vectorWithUnits): vectorWithUnits => {
+    if (!sameUnits(a.units, b.units)) throw Error("Subtracting mismatched units");
+    return {value: subVector(a.value, b.value), units: a.units};
+}
 
 export const multiply = (a: numberWithUnits, b: numberWithUnits): numberWithUnits => {
     return {

@@ -1,4 +1,4 @@
-import {unit, derivedUnit, numberWithUnits, numberWithDerivedUnits} from "./types";
+import {unit, derivedUnit, numberWithUnits, numberWithDerivedUnits, vectorWithUnits, vectorWithDerivedUnits, withUnits} from "./types";
 import { divide } from "./math";
 
 const emptyUnits: {[key: string]: unit} = {
@@ -78,7 +78,7 @@ const convertUnitName = (unit: unit | derivedUnit): string => {
     return `${unit.name}${convertToSuperText(number)}`;
 }
 
-export const display = ({value, units}: numberWithUnits | numberWithDerivedUnits) => {
+export const display = ({value, units}: withUnits) => {
     const positiveExponent = units.filter((unit) => {
         if ("power" in unit) return unit.power > 0;
         return (unit.powerMultiplier ?? 1) > 0;
@@ -93,5 +93,12 @@ export const display = ({value, units}: numberWithUnits | numberWithDerivedUnits
     const positiveUnits = positiveExponent.map(convertUnitName).join("");
     const negativeUnits = negativeExponent.map(convertUnitName).join("");
 
-    return `${value} ${positiveUnits}${hasNegative ? "/":""}${negativeUnits}`;
+    let numeric = value.toString();
+    let end = "";
+    if (Array.isArray(value)) {
+        numeric = `< ${value.join(",")} > | ${value[0]}`;
+        end = ` @ ${value[1]}`;
+    }
+
+    return `${numeric} ${positiveUnits}${hasNegative ? "/":""}${negativeUnits}${end}`;
 }
