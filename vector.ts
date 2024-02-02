@@ -17,8 +17,8 @@ export const subVector = (v1: vector, v2: vector): vector => {
     return [x1 - x2, y1 - y2];
 };
 
-//const scaleVector = (vector: vector, scale: number):vector => [vector[0]*scale, vector[1]*scale];
-//const scalePolarVector = (vector: polarVector, scale:number): polarVector => [vector[0]*scale, vector[1]];
+export const scaleVector = (vector: vector, scale: number):vector => [vector[0]*scale, vector[1]*scale];
+// const scalePolarVector = (vector: polarVector, scale:number): polarVector => [vector[0]*scale, vector[1]];
 
 const degToRad = (deg: number): number => deg*Math.PI/180;
 const radToDeg = (rad: number): number => rad*180/Math.PI;

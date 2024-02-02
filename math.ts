@@ -1,6 +1,6 @@
 import { numberWithUnits, vectorWithUnits } from "./types";
 import { sameUnits, combineUnits, invertUnits } from "./number";
-import { addVector, subVector } from "./vector";
+import { addVector, scaleVector, subVector } from "./vector";
 
 export const add = (a: numberWithUnits, b: numberWithUnits):numberWithUnits => {
     if (!sameUnits(a.units, b.units)) throw Error("Adding mismatched units");
@@ -28,6 +28,13 @@ export const multiply = (a: numberWithUnits, b: numberWithUnits): numberWithUnit
         units: combineUnits([...a.units, ...b.units])
     };
 };
+
+export const scaleVectorWithUnits = (a: vectorWithUnits, b: numberWithUnits): vectorWithUnits => {
+    return {
+        value: scaleVector(a.value, b.value),
+        units: combineUnits([...a.units, ...b.units])
+    }
+}
 
 export const divide = (a: numberWithUnits, b: numberWithUnits): numberWithUnits => {
     return {
