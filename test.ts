@@ -1,7 +1,8 @@
 import { multiply } from "./math";
-import { addUnits, display, restateUnits } from "./number";
+import { addUnits, restateUnits } from "./number";
 import { numberWithDerivedUnits, numberWithUnits } from "./types";
 import { units, derivedUnits } from "./units";
+import { display } from "./display";
 
 const {m} = units;
 const {N, J} = derivedUnits;
