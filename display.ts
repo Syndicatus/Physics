@@ -1,4 +1,5 @@
 import { unit, derivedUnit, withUnits } from "./types";
+import { toPolar } from "./vector";
 
 const superText = "⁰¹²³⁴⁵⁶⁷⁸⁹".split("");
 
@@ -13,7 +14,7 @@ const convertUnitName = (unit: unit | derivedUnit): string => {
     if ("power" in unit) number = unit.power;
     else number = unit.powerMultiplier ?? 1;
 
-    if (number === 1) return `${unit.name}`;
+    if (Math.abs(number) === 1) return `${unit.name}`;
     return `${unit.name}${convertToSuperText(number)}`;
 }
 
@@ -35,8 +36,9 @@ export const display = ({value, units}: withUnits) => {
     let numeric = value.toString();
     let end = "";
     if (Array.isArray(value)) {
-        numeric = `< ${value.join(",")} > | ${value[0]}`;
-        end = ` @ ${value[1]}`;
+        const polar = toPolar(value);
+        numeric = `<${value.join(",")}> | ${polar[0]}`;
+        end = ` @ ${polar[1]}°`;
     }
 
     return `${numeric} ${positiveUnits}${hasNegative ? "/":""}${negativeUnits}${end}`;

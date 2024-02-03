@@ -2,6 +2,18 @@ import {unit, derivedUnit, numberWithUnits, numberWithDerivedUnits, vectorWithUn
 import { divide } from "./math";
 import { scaleVector } from "./vector";
 
+export const powerUnit = (unit: unit | derivedUnit, powerMultiplier: number) => 
+    ("power" in unit) ? 
+        {...unit, power: powerMultiplier}: 
+        {...unit, powerMultiplier};
+
+export const powerBaseUnit = ({name}: unit, power: number) => {return {name, power}}
+
+const powerUnits = (arr: Array<unit>, multiplier: number): Array<unit> => 
+        arr.map(({name, power}) => {return {name, power: power*multiplier}});
+ 
+export const invertUnits = (arr: Array<unit>): Array<unit> => powerUnits(arr, -1);
+
 const emptyUnits: {[key: string]: unit} = {
     m: {name: "m", power: 0},
     s: {name: "s", power: 0},
@@ -31,13 +43,15 @@ export const combineUnits = (arr: Array<unit>): Array<unit> => {
             .filter((unit) => unit.power !== 0);
 };
 
+
+
 export const addUnits = (num: number, units: Array<unit | derivedUnit>): numberWithUnits => {
     let number = num;
     const unitList: Array<unit> = units.flatMap((unit) => {
         if ("power" in unit) return unit;
         number += unit.offset ?? 0;
         number *= unit.multiplier ?? 1;
-        return unit.components;
+        return powerUnits(unit.components, (unit.powerMultiplier ?? 1));
     });
     const trueUnits = combineUnits(unitList);
 
@@ -49,7 +63,7 @@ export const addUnitsToVector = (vec: vector, units: Array<unit | derivedUnit>):
     const unitList: Array<unit> = units.flatMap((unit) => {
         if ("power" in unit) return unit;
         vector = scaleVector(vector, unit.multiplier ?? 1);
-        return unit.components;
+        return powerUnits(unit.components, (unit.powerMultiplier ?? 1));
     });
     const trueUnits = combineUnits(unitList);
 
@@ -66,7 +80,7 @@ export const restateUnits = (number: withUnits, units: Array<unit | derivedUnit>
 
     const trueValue = finalUnits.reduce((acc, unit) => {
         if ("power" in unit) return acc;
-        const divisor = unit.powerMultiplier ?? 1;
+        const divisor = unit.multiplier ?? 1;
         if (Array.isArray(acc)) return scaleVector(acc, 1/divisor);
         return acc/divisor;
     }, number.value)
@@ -74,12 +88,3 @@ export const restateUnits = (number: withUnits, units: Array<unit | derivedUnit>
     if (Array.isArray(trueValue)) return {value: trueValue, units: finalUnits};
     return {value: trueValue, units: finalUnits};
 };
-
-export const powerUnit = (unit: unit | derivedUnit, powerMultiplier: number) => 
-    ("power" in unit) ? 
-        {...unit, power: powerMultiplier}: 
-        {...unit, powerMultiplier};
-
-export const powerBaseUnit = ({name}: unit, power: number) => {return {name, power}}
- 
-export const invertUnits = (arr: Array<unit>): Array<unit> => arr.map(({name, power}) => {return {name, power: power*-1}});

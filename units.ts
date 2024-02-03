@@ -24,7 +24,8 @@ const lengthUnits: Array<derivedUnit> = [
 const otherUnits: Array<derivedUnit> = [
     {name: "N", components: [meter, kilogram, powerBaseUnit(second, -2)]},
     {name: "J", components: [powerBaseUnit(meter, 2), kilogram, powerBaseUnit(second, -2)]},
-    {name: "C", components: [Ampere, second]}
+    {name: "C", components: [Ampere, second]},
+    {name: "uC", components: [Ampere, second], multiplier: 1/1000000}
 ];
 
 export const derivedUnits: {[key: string]: derivedUnit} = 

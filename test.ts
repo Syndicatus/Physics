@@ -1,22 +1,26 @@
-import { multiply } from "./math";
-import { addUnits, restateUnits } from "./number";
-import { numberWithDerivedUnits, numberWithUnits } from "./types";
-import { units, derivedUnits } from "./units";
+import { addUnits, addUnitsToVector, restateUnits } from "./number";
+import { units, derivedUnits, constants } from "./units";
 import { display } from "./display";
+import { electricalForce, electricalField } from "./electricity";
 
 const {m} = units;
-const {N, J} = derivedUnits;
+const {uC, N} = derivedUnits;
 
-const force: numberWithUnits = addUnits(10, [N]);
-const forceInNewton: numberWithDerivedUnits = restateUnits(force, [N]);
-const distance: numberWithUnits = addUnits(10, [m]);
+const particle1 = {
+    charge: addUnits(20, [uC]),
+    position: addUnitsToVector([0, 0], [m])
+};
 
-const work = multiply(force, distance);
+const particle2 = {
+    charge: addUnits(30, [uC]),
+    position: addUnitsToVector([0,5], [m])
+};
 
-const workInNewton = restateUnits(work, [N]);
-const workInJoules = restateUnits(work, [J]);
+const field = electricalField([particle2], addUnitsToVector([0,0], [m]));
+const force = electricalForce([particle2], particle1);
 
-console.log(`${display(forceInNewton)} * ${display(distance)} =`)
-console.log(display(work));
-console.log(display(workInNewton));
-console.log(display(workInJoules));
+console.log(`Particle 1: ${display(restateUnits(particle1.charge, [uC]))} @ ${display(particle1.position)}`);
+console.log(`Particle 2: ${display(restateUnits(particle2.charge, [uC]))} @ ${display(particle2.position)}`)
+
+console.log("Electrical Field (at Particle 1): " + display(restateUnits(field, [N])));
+console.log("Electrical Force (on Particle 1): " + display(restateUnits(force, [N])));
