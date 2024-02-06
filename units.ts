@@ -24,8 +24,11 @@ const lengthUnits: Array<derivedUnit> = [
 const otherUnits: Array<derivedUnit> = [
     {name: "N", components: [meter, kilogram, powerBaseUnit(second, -2)]},
     {name: "J", components: [powerBaseUnit(meter, 2), kilogram, powerBaseUnit(second, -2)]},
+    {name: "W", components: [powerBaseUnit(meter, 2), kilogram, powerBaseUnit(second, -3)]},
     {name: "C", components: [Ampere, second]},
-    {name: "uC", components: [Ampere, second], multiplier: 1/1000000}
+    {name: "uC", components: [Ampere, second], multiplier: 1/1000000},
+    {name: "V", components: [powerBaseUnit(meter, 2), kilogram, powerBaseUnit(second, -3), powerBaseUnit(Ampere, -1)]},
+    {name: "Ohm", components: [powerBaseUnit(meter, 2), kilogram, powerBaseUnit(second, -3), powerBaseUnit(Ampere, -2)]}
 ];
 
 export const derivedUnits: {[key: string]: derivedUnit} = 

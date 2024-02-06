@@ -39,6 +39,8 @@ export type vectorWithDerivedUnits = {
 };
 
 export type withUnits = numberWithUnits | numberWithDerivedUnits | vectorWithUnits | vectorWithDerivedUnits;
+
+export type option<type> = type | undefined;
 //#endregion
 
 //#region Objects
